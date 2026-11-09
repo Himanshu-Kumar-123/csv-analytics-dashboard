@@ -116,3 +116,9 @@ def test_invalid_specs(df: pd.DataFrame, kw: dict) -> None:
 def test_empty_frame_rejected(df: pd.DataFrame) -> None:
     with pytest.raises(InvalidParameterError, match="No rows"):
         chart(df.iloc[0:0], type="histogram", x="num")
+
+
+def test_bar_with_column_named_key() -> None:
+    df = pd.DataFrame({"cat": ["a", "a", "b"], "__key": [1.0, 2.0, 5.0]})
+    trace = chart(df, type="bar", x="cat", y="__key", agg="sum")["figure"]["data"][0]
+    assert dict(zip(trace["x"], trace["y"], strict=True)) == {"b": 5.0, "a": 3.0}

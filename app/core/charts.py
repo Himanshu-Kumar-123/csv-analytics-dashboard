@@ -145,8 +145,7 @@ def bar(df: pd.DataFrame, kinds: dict[str, ColumnKind], spec: ChartSpec) -> tupl
     _check_agg(spec.agg, y)
     assert x is not None
     data = df[[x] + ([y] if y and y != x else [])].copy()
-    data["__key"] = _labels(data[x])
-    result = _aggregate(data.groupby("__key", sort=False), spec.agg, y)
+    result = _aggregate(data.groupby(_labels(data[x]), sort=False), spec.agg, y)
     result = result.dropna().sort_values(ascending=False)
     total_groups = len(result)
     result = result.head(spec.top)

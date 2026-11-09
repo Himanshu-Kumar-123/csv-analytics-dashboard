@@ -11,6 +11,7 @@ User input is never evaluated as code (no DataFrame.query / eval).
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -74,8 +75,8 @@ def _to_number(value: Any, column: str) -> int | float:
     # Keep integers exact: float() would round values above 2**53.
     if isinstance(value, int):
         return value
-    if isinstance(value, str) and value.strip().lstrip("+-").isdigit():
-        return int(value.strip())
+    if isinstance(value, str) and re.fullmatch(r"\s*[+-]?[0-9]{1,30}\s*", value):
+        return int(value)
     try:
         number = float(value)
     except (TypeError, ValueError) as exc:

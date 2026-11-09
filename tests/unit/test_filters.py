@@ -138,3 +138,10 @@ def test_large_integer_filters_stay_exact() -> None:
         assert apply_filters(df, conds)["id"].tolist() == [big + 1]
     conds = validate_conditions([{"column": "id", "op": "gt", "value": str(big + 1)}], df, kinds)
     assert apply_filters(df, conds)["id"].tolist() == [big + 2]
+
+
+@pytest.mark.parametrize("value", ["\u00b2", "1" * 5000, "12abc"])
+def test_malformed_numeric_filter_is_validation_error(value: str) -> None:
+    df = pd.DataFrame({"n": [1, 2]})
+    with pytest.raises(InvalidParameterError):
+        validate_conditions([{"column": "n", "op": "eq", "value": value}], df, {"n": "numeric"})

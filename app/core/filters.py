@@ -68,9 +68,14 @@ def parse_filter_param(raw: Any) -> list[dict[str, Any]]:
     return raw
 
 
-def _to_number(value: Any, column: str) -> float:
+def _to_number(value: Any, column: str) -> int | float:
     if isinstance(value, bool):
         raise InvalidParameterError(f"Filter on '{column}' expects a number.")
+    # Keep integers exact: float() would round values above 2**53.
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip().lstrip("+-").isdigit():
+        return int(value.strip())
     try:
         number = float(value)
     except (TypeError, ValueError) as exc:

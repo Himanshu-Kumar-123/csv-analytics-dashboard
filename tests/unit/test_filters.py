@@ -127,3 +127,14 @@ def test_parse_filter_param_accepts_json_and_empty() -> None:
     assert parse_filter_param('[{"column": "a", "op": "is_null"}]') == [
         {"column": "a", "op": "is_null"}
     ]
+
+
+def test_large_integer_filters_stay_exact() -> None:
+    big = 2**53
+    df = pd.DataFrame({"id": [big, big + 1, big + 2]})
+    kinds = {"id": "numeric"}
+    for value in (big + 1, str(big + 1)):
+        conds = validate_conditions([{"column": "id", "op": "eq", "value": value}], df, kinds)
+        assert apply_filters(df, conds)["id"].tolist() == [big + 1]
+    conds = validate_conditions([{"column": "id", "op": "gt", "value": str(big + 1)}], df, kinds)
+    assert apply_filters(df, conds)["id"].tolist() == [big + 2]

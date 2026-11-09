@@ -2,5 +2,46 @@
 {% set show_filters = True %}
 {% extends "dataset/_layout.html" %}
 {% block page %}
-<div class="alert alert-info">This view is under construction.</div>
+<div class="row g-3">
+  <div class="col-lg-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form id="chart-form" novalidate>
+          <div class="mb-2">
+            <label for="chart-type" class="form-label small mb-1">Chart type</label>
+            <select id="chart-type" class="form-select form-select-sm">
+              <option value="histogram">Histogram</option>
+              <option value="bar">Bar chart</option>
+              <option value="line">Line chart</option>
+              <option value="scatter">Scatter plot</option>
+              <option value="box">Box plot</option>
+              <option value="pie">Pie chart</option>
+              <option value="heatmap">Correlation heatmap</option>
+              <option value="missing">Missing values</option>
+            </select>
+          </div>
+          <div id="chart-fields"></div>
+          <button type="submit" class="btn btn-primary btn-sm w-100 mt-2"><i class="bi bi-bar-chart"></i> Render chart</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <div class="small text-body-secondary" id="chart-meta" aria-live="polite"></div>
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="chart-download" disabled>
+            <i class="bi bi-download"></i> Download PNG
+          </button>
+        </div>
+        <div id="chart" class="chart-container" role="img" aria-label="Chart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/plotly/plotly.min.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/visualize.js') }}"></script>
 {% endblock %}

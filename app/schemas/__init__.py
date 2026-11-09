@@ -46,3 +46,26 @@ class DuplicatesQuerySchema(FilterQuerySchema):
     columns = fields.String(load_default=None)
     normalize = fields.Boolean(load_default=False)
     max_groups = fields.Integer(load_default=20, validate=validate.Range(min=1, max=100))
+
+
+class ChartQuerySchema(FilterQuerySchema):
+    type = fields.String(
+        required=True,
+        validate=validate.OneOf(
+            ["histogram", "bar", "line", "scatter", "box", "pie", "heatmap", "missing"]
+        ),
+    )
+    x = fields.String(load_default=None)
+    y = fields.String(load_default=None)
+    color = fields.String(load_default=None)
+    agg = fields.String(
+        load_default="count",
+        validate=validate.OneOf(["count", "sum", "mean", "median", "min", "max"]),
+    )
+    bins = fields.Integer(load_default=30, validate=validate.Range(min=2, max=200))
+    top = fields.Integer(load_default=20, validate=validate.Range(min=2, max=50))
+    freq = fields.String(
+        load_default="auto",
+        validate=validate.OneOf(["auto", "hour", "day", "week", "month", "quarter", "year"]),
+    )
+    method = fields.String(load_default="pearson", validate=validate.OneOf(["pearson", "spearman"]))

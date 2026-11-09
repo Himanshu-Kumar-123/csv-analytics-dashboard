@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Not found · CSV Analytics{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-5">404</h1>
+  <p class="lead">{{ message or "The page you requested could not be found." }}</p>
+  <a class="btn btn-primary" href="{{ url_for('web.index') }}">Back to datasets</a>
+</div>
+{% endblock %}

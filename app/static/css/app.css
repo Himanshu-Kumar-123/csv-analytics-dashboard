@@ -1,0 +1,14 @@
+.card-metric .metric-value { font-size: 1.6rem; font-weight: 600; }
+.card-metric .metric-label { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--bs-secondary-color); }
+.drop-zone { border: 2px dashed var(--bs-border-color); border-radius: .75rem; padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.drop-zone.dragover, .drop-zone:hover { border-color: var(--bs-primary); background: var(--bs-primary-bg-subtle); }
+.drop-zone:focus-visible { outline: 3px solid var(--bs-primary); outline-offset: 2px; }
+.table-data { font-size: .85rem; }
+.table-data td { max-width: 22rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-data th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.table-data .null-cell { color: var(--bs-danger); font-style: italic; opacity: .75; }
+.chart-container { min-height: 420px; }
+.kind-badge { font-size: .7rem; }
+.loading-overlay { position: relative; min-height: 4rem; }
+.loading-overlay::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.6); }
+.filter-row + .filter-row { margin-top: .5rem; }

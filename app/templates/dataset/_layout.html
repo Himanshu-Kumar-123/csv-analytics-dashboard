@@ -10,7 +10,24 @@
         {{ dataset.display_name }} · {{ "{:,}".format(dataset.n_rows) }} rows × {{ dataset.n_cols }} columns
       </div>
     </div>
-    <div class="d-flex gap-2">{% block page_actions %}{% endblock %}</div>
+    <div class="d-flex gap-2">
+      {% block page_actions %}{% endblock %}
+      <div class="dropdown">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-download"></i> Export
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><h6 class="dropdown-header">Summary CSV (active filters apply)</h6></li>
+          <li><button class="dropdown-item" type="button" data-export="overview">Column overview</button></li>
+          <li><button class="dropdown-item" type="button" data-export="statistics">Descriptive statistics</button></li>
+          <li><button class="dropdown-item" type="button" data-export="missing">Missing values</button></li>
+          <li><button class="dropdown-item" type="button" data-export="duplicates">Duplicates</button></li>
+          <li><button class="dropdown-item" type="button" data-export="correlations">Correlations</button></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><button class="dropdown-item" type="button" data-export="report"><i class="bi bi-file-earmark-pdf"></i> PDF analysis report</button></li>
+        </ul>
+      </div>
+    </div>
   </div>
   {% if show_filters %}{% include "partials/filter_panel.html" %}{% endif %}
   {% block page %}{% endblock %}

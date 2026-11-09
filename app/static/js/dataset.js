@@ -31,3 +31,35 @@ export function getColumns() {
   }
   return columnsPromise;
 }
+
+// Export menu: downloads summaries for the current filters without navigating away.
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-export]");
+  if (!button) return;
+  const { toast } = await import("./ui.js");
+  const kind = button.dataset.export;
+  const path = kind === "report" ? "report.pdf" : `${kind}.csv`;
+  const params = new URLSearchParams();
+  if (getFilters().length) params.set("filters", JSON.stringify(getFilters()));
+  const url = `${apiBase}/export/${path}${params.toString() ? `?${params}` : ""}`;
+  button.disabled = true;
+  try {
+    const response = await fetch(url, { credentials: "same-origin" });
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new Error(body?.error?.message ?? `Export failed (${response.status}).`);
+    }
+    const disposition = response.headers.get("Content-Disposition") ?? "";
+    const filename = /filename="([^"]+)"/.exec(disposition)?.[1] ?? path;
+    const objectUrl = URL.createObjectURL(await response.blob());
+    const link = Object.assign(document.createElement("a"), { href: objectUrl, download: filename });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  } catch (err) {
+    toast(err.message);
+  } finally {
+    button.disabled = false;
+  }
+});

@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    image: csv-analytics-dashboard:latest
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    environment:
+      # Leave SECRET_KEY unset to auto-generate one stored in the data volume.
+      SECRET_KEY: ${SECRET_KEY:-}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-50}
+      DATAFRAME_CACHE_SIZE: ${DATAFRAME_CACHE_SIZE:-3}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+    volumes:
+      - dashboard-data:/data
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  dashboard-data:

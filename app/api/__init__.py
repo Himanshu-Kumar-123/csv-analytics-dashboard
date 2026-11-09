@@ -9,4 +9,12 @@ def health() -> ResponseReturnValue:
     return jsonify({"status": "ok"})
 
 
-from app.api import charts, datasets, explore, exports, quality, samples, statistics  # noqa: E402, F401
+from app.api import (  # noqa: E402, F401
+    charts,
+    datasets,
+    explore,
+    exports,
+    quality,
+    samples,
+    statistics,
+)

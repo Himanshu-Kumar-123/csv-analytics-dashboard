@@ -1,7 +1,7 @@
 """create datasets table
 
 Revision ID: c3ee80ce6220
-Revises: 
+Revises:
 Create Date: 2026-11-09 15:13:02.180438
 
 """

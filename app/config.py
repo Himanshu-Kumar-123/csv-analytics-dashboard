@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import ClassVar
 
 MB = 1024 * 1024
@@ -14,6 +15,9 @@ class BaseConfig:
     # Populated from the instance path in create_app() when not provided.
     SQLALCHEMY_DATABASE_URI: str | None = os.environ.get("DATABASE_URL")
     DATA_DIR: str | None = os.environ.get("DATA_DIR")
+    SAMPLE_DATA_DIR = os.environ.get(
+        "SAMPLE_DATA_DIR", str(Path(__file__).resolve().parent.parent / "sample_data")
+    )
 
     MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
     MAX_CONTENT_LENGTH = MAX_UPLOAD_MB * MB + 64 * 1024  # small allowance for multipart overhead

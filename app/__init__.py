@@ -48,6 +48,7 @@ def create_app(
     migrate.init_app(app, db, directory=str(Path(__file__).resolve().parent.parent / "migrations"))
     csrf.init_app(app)
 
+    from app import models  # noqa: F401
     from app.api import api_bp
     from app.web import web_bp
 

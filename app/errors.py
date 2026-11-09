@@ -9,6 +9,8 @@ from flask import Flask, Response, jsonify, render_template, request
 from flask_wtf.csrf import CSRFError
 from werkzeug.exceptions import HTTPException
 
+from app.core.exceptions import InvalidFileError, InvalidParameterError
+
 logger = logging.getLogger(__name__)
 
 
@@ -69,6 +71,14 @@ def register_error_handlers(app: Flask) -> None:
     @app.errorhandler(AppError)
     def handle_app_error(err: AppError):
         return error_response(err.status_code, err.code, err.message, err.details)
+
+    @app.errorhandler(InvalidFileError)
+    def handle_invalid_file(err: InvalidFileError):
+        return error_response(400, "invalid_file", err.message, err.details)
+
+    @app.errorhandler(InvalidParameterError)
+    def handle_invalid_param(err: InvalidParameterError):
+        return error_response(422, "validation_error", err.message, err.details)
 
     @app.errorhandler(CSRFError)
     def handle_csrf(err: CSRFError):

@@ -9,19 +9,7 @@ import pandas as pd
 from pandas.api import types as ptypes
 
 from app.core.exceptions import InvalidParameterError
-from app.core.serialization import frame_to_records, to_jsonable
-
-
-def _format_datetimes(page: pd.DataFrame) -> pd.DataFrame:
-    page = page.copy()
-    for col in page.columns:
-        series = page[col]
-        if ptypes.is_datetime64_any_dtype(series):
-            non_null = series.dropna()
-            date_only = non_null.empty or bool((non_null.dt.normalize() == non_null).all())
-            fmt = "%Y-%m-%d" if date_only else "%Y-%m-%d %H:%M:%S"
-            page[col] = series.dt.strftime(fmt).where(series.notna(), None)
-    return page
+from app.core.serialization import format_datetimes, frame_to_records, to_jsonable
 
 
 def preview(
@@ -40,7 +28,7 @@ def preview(
     total_pages = max(1, math.ceil(matched / page_size))
     page = min(page, total_pages)
     start = (page - 1) * page_size
-    window = _format_datetimes(df.iloc[start : start + page_size])
+    window = format_datetimes(df.iloc[start : start + page_size])
     return {
         "rows": frame_to_records(window),
         "page": page,

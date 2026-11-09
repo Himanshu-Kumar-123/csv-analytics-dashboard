@@ -16,3 +16,4 @@
 .table-corr { font-size: .8rem; }
 .table-corr .corr-head { max-width: 7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-corr .corr-cell { min-width: 3.5rem; }
+.missing-bar { height: .5rem; min-width: 6rem; }

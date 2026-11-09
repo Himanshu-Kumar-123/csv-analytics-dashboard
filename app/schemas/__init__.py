@@ -40,3 +40,9 @@ class ValuesQuerySchema(FilterQuerySchema):
 
 class CorrelationQuerySchema(FilterQuerySchema):
     method = fields.String(load_default="pearson", validate=validate.OneOf(["pearson", "spearman"]))
+
+
+class DuplicatesQuerySchema(FilterQuerySchema):
+    columns = fields.String(load_default=None)
+    normalize = fields.Boolean(load_default=False)
+    max_groups = fields.Integer(load_default=20, validate=validate.Range(min=1, max=100))

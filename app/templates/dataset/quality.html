@@ -2,5 +2,49 @@
 {% set show_filters = True %}
 {% extends "dataset/_layout.html" %}
 {% block page %}
-<div class="alert alert-info">This view is under construction.</div>
+<div id="quality-summary" class="row g-3 mb-3" aria-live="polite"></div>
+<div class="row g-3 mb-3">
+  <div class="col-xl-7">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6">Missing values by column</h2>
+        <div id="missing-columns"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6">Most common missing patterns</h2>
+        <p class="small text-body-secondary">Combinations of columns that are missing together in the same row.</p>
+        <div id="missing-patterns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <h2 class="h6">Duplicate rows</h2>
+    <form id="dup-form" class="row g-2 align-items-end mb-3">
+      <div class="col-md-6">
+        <label for="dup-columns" class="form-label small mb-1">Compare columns <span class="text-body-secondary">(none selected = all columns)</span></label>
+        <select id="dup-columns" class="form-select form-select-sm" multiple size="5"></select>
+      </div>
+      <div class="col-md-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="dup-normalize">
+          <label class="form-check-label small" for="dup-normalize">Ignore case and extra whitespace in text (near-duplicates)</label>
+        </div>
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Check</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="dup-reset">Reset</button>
+      </div>
+    </form>
+    <div id="dup-result" aria-live="polite"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/quality.js') }}"></script>
 {% endblock %}

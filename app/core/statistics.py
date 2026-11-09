@@ -110,12 +110,16 @@ def datetime_stats(series: pd.Series) -> dict[str, Any]:
         return out
     lo, hi = values.min(), values.max()
     fmt = "%Y-%m-%d" if (values.dt.normalize() == values).all() else "%Y-%m-%d %H:%M:%S"
-    median = values.sort_values().iloc[(len(values) - 1) // 2]
+    ordered = values.sort_values()
+    mid = len(ordered) // 2
+    median = ordered.iloc[mid]
+    if len(ordered) % 2 == 0:
+        median = ordered.iloc[mid - 1] + (median - ordered.iloc[mid - 1]) / 2
     out.update(
         {
             "min": lo.strftime(fmt),
             "max": hi.strftime(fmt),
-            "median": median.strftime(fmt),
+            "median": median.strftime(fmt if median == median.normalize() else "%Y-%m-%d %H:%M:%S"),
             "range_days": _round((hi - lo).total_seconds() / 86400, 2),
             "unique": int(values.nunique()),
         }

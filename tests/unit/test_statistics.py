@@ -122,3 +122,10 @@ def test_correlations_rejects_bad_input() -> None:
         correlations(df, column_kinds(df), "kendall")
     with pytest.raises(InvalidParameterError):
         correlations(df, column_kinds(df), columns=["c"])
+
+
+def test_datetime_median_even_count() -> None:
+    out = datetime_stats(pd.Series(pd.to_datetime(["2024-01-01 00:00:00", "2024-01-03 00:00:00"])))
+    assert out["median"] == "2024-01-02"
+    out = datetime_stats(pd.Series(pd.to_datetime(["2024-01-01 00:00:00", "2024-01-02 00:00:00"])))
+    assert out["median"] == "2024-01-01 12:00:00"

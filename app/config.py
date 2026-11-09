@@ -9,8 +9,11 @@ from typing import ClassVar
 MB = 1024 * 1024
 
 
+DEV_SECRET_KEY = "dev-insecure-change-me"  # noqa: S105
+
+
 class BaseConfig:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-change-me")
+    SECRET_KEY = os.environ.get("SECRET_KEY") or DEV_SECRET_KEY
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Populated from the instance path in create_app() when not provided.
     SQLALCHEMY_DATABASE_URI: str | None = os.environ.get("DATABASE_URL")

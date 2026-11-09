@@ -38,3 +38,15 @@ def test_html_404_is_page(client: FlaskClient) -> None:
 
 def test_json_responses_not_cached(client: FlaskClient) -> None:
     assert client.get("/api/v1/health").headers["Cache-Control"] == "no-store"
+
+
+def test_production_requires_secret_key(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    import pytest
+
+    from app import create_app
+
+    monkeypatch.delenv("SECRET_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="SECRET_KEY"):
+        create_app("production", instance_path=str(tmp_path))
+    app = create_app("production", instance_path=str(tmp_path), overrides={"SECRET_KEY": "x" * 32})
+    assert app.config["SECRET_KEY"] == "x" * 32

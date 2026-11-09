@@ -9,7 +9,7 @@ from typing import Any
 
 from flask import Flask
 
-from app.config import get_config
+from app.config import DEV_SECRET_KEY, ProductionConfig, get_config
 from app.errors import register_error_handlers
 from app.extensions import csrf, db, migrate
 from app.security import register_security_headers
@@ -30,6 +30,12 @@ def create_app(
     app.config.from_object(get_config(config_name))
     if overrides:
         app.config.update(overrides)
+    if get_config(config_name) is ProductionConfig and app.config.get("SECRET_KEY") in (
+        None,
+        "",
+        DEV_SECRET_KEY,
+    ):
+        raise RuntimeError("SECRET_KEY must be set to a private value in production.")
 
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     if not app.config.get("SQLALCHEMY_DATABASE_URI"):

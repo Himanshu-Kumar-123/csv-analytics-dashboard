@@ -36,3 +36,7 @@ class PreviewQuerySchema(FilterQuerySchema):
 
 class ValuesQuerySchema(FilterQuerySchema):
     top = fields.Integer(load_default=20, validate=validate.Range(min=1, max=100))
+
+
+class CorrelationQuerySchema(FilterQuerySchema):
+    method = fields.String(load_default="pearson", validate=validate.OneOf(["pearson", "spearman"]))

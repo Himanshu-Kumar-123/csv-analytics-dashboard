@@ -12,3 +12,7 @@
 .loading-overlay { position: relative; min-height: 4rem; }
 .loading-overlay::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.6); }
 .filter-row + .filter-row { margin-top: .5rem; }
+.table-stats { font-size: .85rem; white-space: nowrap; }
+.table-corr { font-size: .8rem; }
+.table-corr .corr-head { max-width: 7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-corr .corr-cell { min-width: 3.5rem; }

@@ -1,0 +1,26 @@
+{% set page_title = "Overview" %}
+{% extends "dataset/_layout.html" %}
+{% block page %}
+<div class="row g-3 mb-3" id="metric-cards"></div>
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h5 card-title">Columns</h2>
+    <div id="columns-table"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="values-modal" tabindex="-1" aria-labelledby="values-modal-title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title fs-5" id="values-modal-title">Top values</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="values-modal-body"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/overview.js') }}"></script>
+{% endblock %}

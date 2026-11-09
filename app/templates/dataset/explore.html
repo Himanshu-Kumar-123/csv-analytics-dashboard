@@ -1,0 +1,37 @@
+{% set page_title = "Explore data" %}
+{% set show_filters = True %}
+{% extends "dataset/_layout.html" %}
+{% block page %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+      <div class="small text-body-secondary" id="table-summary" aria-live="polite"></div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="page-size" class="small text-body-secondary">Rows per page</label>
+        <select id="page-size" class="form-select form-select-sm w-auto">
+          <option>25</option><option selected>50</option><option>100</option><option>200</option>
+        </select>
+      </div>
+    </div>
+    <div id="data-table" class="table-responsive"></div>
+    <nav class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3" aria-label="Table pagination">
+      <div class="btn-group btn-group-sm">
+        <button type="button" class="btn btn-outline-secondary" id="page-first" aria-label="First page"><i class="bi bi-chevron-double-left"></i></button>
+        <button type="button" class="btn btn-outline-secondary" id="page-prev" aria-label="Previous page"><i class="bi bi-chevron-left"></i></button>
+      </div>
+      <div class="d-flex align-items-center gap-2 small">
+        <label for="page-input">Page</label>
+        <input type="number" min="1" id="page-input" class="form-control form-control-sm" style="width: 6rem">
+        <span id="page-total"></span>
+      </div>
+      <div class="btn-group btn-group-sm">
+        <button type="button" class="btn btn-outline-secondary" id="page-next" aria-label="Next page"><i class="bi bi-chevron-right"></i></button>
+        <button type="button" class="btn btn-outline-secondary" id="page-last" aria-label="Last page"><i class="bi bi-chevron-double-right"></i></button>
+      </div>
+    </nav>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/explorer.js') }}"></script>
+{% endblock %}

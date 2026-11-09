@@ -1,0 +1,21 @@
+<div class="card shadow-sm mb-3" id="filter-panel">
+  <div class="card-header d-flex align-items-center justify-content-between bg-body">
+    <button class="btn btn-link text-decoration-none p-0 fw-semibold" type="button" data-bs-toggle="collapse"
+            data-bs-target="#filter-body" aria-expanded="false" aria-controls="filter-body">
+      <i class="bi bi-funnel"></i> Filters <span class="badge text-bg-primary ms-1 d-none" id="filter-count"></span>
+    </button>
+    <span class="small text-body-secondary" id="filter-match" aria-live="polite"></span>
+  </div>
+  <div class="collapse" id="filter-body">
+    <div class="card-body">
+      <p class="small text-body-secondary mb-2">All conditions must match (AND). Filters apply to every page of this dataset during your browser session.</p>
+      <div id="filter-rows"></div>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="filter-add"><i class="bi bi-plus-lg"></i> Add condition</button>
+        <button type="button" class="btn btn-sm btn-primary" id="filter-apply"><i class="bi bi-check2"></i> Apply</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="filter-clear"><i class="bi bi-x-lg"></i> Clear all</button>
+      </div>
+      <div class="alert alert-danger small mt-3 mb-0 d-none" id="filter-error" role="alert"></div>
+    </div>
+  </div>
+</div>

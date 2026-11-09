@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
+import json
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 from typing import IO
 
 import pandas as pd
 from flask import current_app
 
+from app.core.filters import Condition, apply_filters, parse_filter_param, validate_conditions
 from app.core.ingest import IngestLimits, parse_csv
-from app.core.profiling import build_schema
+from app.core.profiling import ColumnKind, build_schema
 from app.errors import NotFoundError, PayloadTooLargeError
 from app.models import Dataset
 from app.services.samples import SAMPLES
@@ -19,6 +22,21 @@ from app.storage.file_store import FileStore, FileTooLargeError
 from app.storage.repository import DatasetRepository
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class DatasetView:
+    """A dataset with its (optionally filtered) DataFrame. Frames are read-only."""
+
+    dataset: Dataset
+    full: pd.DataFrame
+    frame: pd.DataFrame
+    conditions: list[Condition]
+    kinds: dict[str, ColumnKind]
+
+    @property
+    def filter_summary(self) -> list[dict[str, object]]:
+        return [c.to_dict() for c in self.conditions]
 
 
 class DatasetService:
@@ -38,6 +56,7 @@ class DatasetService:
         self.limits = limits
         self.max_upload_bytes = max_upload_bytes
         self.sample_dir = sample_dir
+        self.filter_cache = LRUCache(2)
 
     # ---- ingestion -------------------------------------------------------
     def ingest_upload(self, stream: IO[bytes], filename: str, display_name: str) -> Dataset:
@@ -110,15 +129,36 @@ class DatasetService:
             self.cache.put(dataset_id, df)
         return df
 
+    @staticmethod
+    def kinds(dataset: Dataset) -> dict[str, ColumnKind]:
+        return {c["name"]: c["kind"] for c in dataset.schema}
+
+    def view(self, dataset_id: str, raw_filters: object = None) -> DatasetView:
+        dataset = self.get(dataset_id)
+        full = self.load_frame(dataset_id)
+        kinds = self.kinds(dataset)
+        conditions = validate_conditions(parse_filter_param(raw_filters), full, kinds)
+        if not conditions:
+            return DatasetView(dataset, full, full, conditions, kinds)
+        key = (dataset_id, json.dumps([c.to_dict() for c in conditions], sort_keys=True))
+        frame = self.filter_cache.get(key)
+        if frame is None:
+            frame = apply_filters(full, conditions)
+            self.filter_cache.put(key, frame)
+        return DatasetView(dataset, full, frame, conditions, kinds)
+
     def delete(self, dataset_id: str) -> None:
         dataset = self.get(dataset_id)
         self.repository.delete(dataset)
         self.store.delete(dataset_id)
-        self.cache.invalidate(
-            lambda key: (
-                key == dataset_id or (isinstance(key, tuple) and key and key[0] == dataset_id)
+
+        def belongs(key: object) -> bool:
+            return key == dataset_id or (
+                isinstance(key, tuple) and bool(key) and key[0] == dataset_id
             )
-        )
+
+        self.cache.invalidate(belongs)
+        self.filter_cache.invalidate(belongs)
 
 
 def get_dataset_service() -> DatasetService:
